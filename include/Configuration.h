@@ -1,0 +1,14 @@
+#pragma once
+#include <inttypes.h>
+
+class Configuration
+{
+public:
+  uint8_t PIN_DC_TFT = 16;
+  uint8_t PIN_CS_TFT = 5;
+  uint8_t PIN_SCK_TFT = 14;
+  uint8_t PIN_MOSI_TFT = 13;
+  uint8_t PIN_MISO_TFT = 12;
+  uint8_t PIN_RST_TFT = 17;
+  uint8_t PIN_PHOTORESISTOR_INPUT = 2;
+};
