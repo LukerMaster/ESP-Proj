@@ -8,8 +8,8 @@ enum class Theme
   Dark
 };
 
-/// @brief Theme manager? Nah. Themeinator.
-class Themeinator
+/// @brief Color manager? Nah. Colorinator.
+class Colorinator
 {
   uint16_t COLOR_WHITE = 0xFFFF;
   uint16_t COLOR_CALM = 0x4DA4;

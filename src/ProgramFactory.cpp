@@ -13,12 +13,10 @@ std::shared_ptr<Program> ProgramFactory::CreateProgram()
         cfg->PIN_MISO_TFT);
 
     auto gfx = std::make_shared<Arduino_ILI9341>(bus.get(), cfg->PIN_RST_TFT);
-    std::shared_ptr<Themeinator> themeinator = std::make_shared<Themeinator>();
     
-    auto textPrinter = std::make_shared<TextPrinter>(themeinator, gfx);
-    auto themeLightController = std::make_shared<ThemeLightController>(cfg->PIN_PHOTORESISTOR_INPUT, themeinator);
-    auto screenController = std::make_shared<ScreenController>(bus, gfx, textPrinter, themeinator);
+    auto screenAPI = std::make_shared<ScreenAPI>(bus, gfx);
+    auto photoresistorReader = std::make_shared<PhotoresistorReader>(cfg->PIN_PHOTORESISTOR_INPUT);
     
     
-    return std::make_shared<Program>(screenController, themeLightController);
+    return std::make_shared<Program>(screenAPI, photoresistorReader);
 }
