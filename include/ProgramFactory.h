@@ -1,4 +1,5 @@
 #include <Program.h>
+#include <Configuration.h>
 
 class ProgramFactory
 {

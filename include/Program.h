@@ -1,20 +1,23 @@
 #pragma once
 #include <Arduino.h>
-#include <ScreenController.h>
-#include <Configuration.h>
-#include <ThemeLightController.h>
 #include <memory>
+#include "ScreenAPI.h"
+#include "PhotoresistorReader.h"
+#include "Colorinator.h"
 
 class Program
 {
-    std::shared_ptr<Configuration> cfg;
+    std::shared_ptr<ScreenAPI> screen;
+    std::shared_ptr<PhotoresistorReader> photoresistor;
 
-    std::shared_ptr<ScreenController> screenController;
-    std::shared_ptr<ThemeLightController> themeLightController;
-    
+    std::unique_ptr<Colorinator> colorinator;
+
     uint32_t _TickRate;
+
+    uint64_t time = 0;
+
 public:
-    Program(std::shared_ptr<ScreenController> screenCtrl, std::shared_ptr<ThemeLightController> themeCtrl);
+    Program(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor);
     void SetTickRate(uint32_t tickRate = 20);
     uint32_t GetTickRate();
     void Start();

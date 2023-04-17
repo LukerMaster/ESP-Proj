@@ -1,10 +1,12 @@
 #include "Program.h"
 
-Program::Program(std::shared_ptr<ScreenController> screenCtrl, std::shared_ptr<ThemeLightController> themeCtrl)
+Program::Program(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor)
 {
     Serial.println("ESP Program starting.");
-    this->screenController = screenCtrl;
-    this->themeLightController = themeCtrl;
+    this->screen = screen;
+    this->photoresistor = photoresistor;
+
+    this->colorinator = std::unique_ptr<Colorinator>(new Colorinator());
 }
 
 void Program::SetTickRate(uint32_t tickRate)
@@ -15,6 +17,7 @@ void Program::SetTickRate(uint32_t tickRate)
 void Program::Start()
 {
     Serial.println("Start called.");
+    screen->FillScreen(colorinator->GetBgColor());
 }
 
 uint32_t Program::GetTickRate()
@@ -24,11 +27,22 @@ uint32_t Program::GetTickRate()
 
 void Program::Tick(uint64_t millisDelta)
 {
-  themeLightController->UpdateTheme();
-  if (themeLightController->ScreenNeedsFullRedraw)
+  time += millisDelta;
+  if (photoresistor->GetLightLevel() < 0.4f && colorinator->CurrentTheme != Theme::Dark)
   {
-    screenController->RedrawEverything();
-    themeLightController->ScreenNeedsFullRedraw = false;
+    colorinator->CurrentTheme = Theme::Dark;
+    screen->FillScreen(colorinator->GetBgColor());
   }
-  screenController->Tick(millisDelta);
+  else if (photoresistor->GetLightLevel() >= 0.4f && colorinator->CurrentTheme != Theme::Standard)
+  {
+    colorinator->CurrentTheme = Theme::Standard;
+    screen->FillScreen(colorinator->GetBgColor());
+  }
+  screen->SetTextColor(colorinator->GetTextColor());
+  screen->SetBgColor(colorinator->GetBgColor());
+
+
+  screen->SetTextPosition(10, 10);
+  screen->SetTextScale(2);
+  screen->DrawText("Op time: " + std::to_string(time/1000) + "s");
 }
