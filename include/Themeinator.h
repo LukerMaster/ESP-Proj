@@ -12,6 +12,7 @@ enum class Theme
 class Themeinator
 {
   uint16_t COLOR_WHITE = 0xFFFF;
+  uint16_t COLOR_CALM = 0x4DA4;
   uint16_t COLOR_BLACK = 0x0000;
 
 public:
@@ -24,7 +25,7 @@ public:
       case Theme::Standard:
         return COLOR_BLACK;
       case Theme::Dark:
-        return COLOR_WHITE; 
+        return COLOR_CALM; 
       default:
         return COLOR_BLACK;
     }
