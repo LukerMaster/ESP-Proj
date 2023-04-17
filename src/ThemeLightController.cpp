@@ -19,9 +19,11 @@ void ThemeLightController::UpdateTheme()
     if (darkness > 1400 && themeinator->CurrentTheme != Theme::Dark)
     {
         themeinator->CurrentTheme = Theme::Dark;
+        ScreenNeedsFullRedraw = true;
     }
     if (darkness <= 1400 && themeinator->CurrentTheme != Theme::Standard)
     {
         themeinator->CurrentTheme = Theme::Standard;
+        ScreenNeedsFullRedraw = true;
     }
 }

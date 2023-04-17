@@ -16,5 +16,6 @@ public:
     std::shared_ptr<Arduino_GFX> gfx,
     std::shared_ptr<TextPrinter> printer,
     std::shared_ptr<Themeinator> themeinator);
+    void RedrawEverything();
     void Tick(uint64_t millisDelta);
 };

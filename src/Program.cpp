@@ -25,5 +25,10 @@ uint32_t Program::GetTickRate()
 void Program::Tick(uint64_t millisDelta)
 {
   themeLightController->UpdateTheme();
+  if (themeLightController->ScreenNeedsFullRedraw)
+  {
+    screenController->RedrawEverything();
+    themeLightController->ScreenNeedsFullRedraw = false;
+  }
   screenController->Tick(millisDelta);
 }

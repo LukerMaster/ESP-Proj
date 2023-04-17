@@ -13,6 +13,11 @@ ScreenController::ScreenController(std::shared_ptr<Arduino_DataBus> bus, std::sh
     gfx->fillScreen(themeinator->GetBgColor());
 }
 
+void ScreenController::RedrawEverything()
+{
+    gfx->fillScreen(themeinator->GetBgColor());
+}
+
 void ScreenController::Tick(uint64_t millisDelta)
 {
     textPrinter->SetPosition(20, 20);
