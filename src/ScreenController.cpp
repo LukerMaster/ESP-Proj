@@ -1,18 +1,12 @@
 #include "ScreenController.h"
 
-ScreenController::ScreenController(std::shared_ptr<Configuration> cfg, std::shared_ptr<Themeinator> themeinator)
+ScreenController::ScreenController(std::shared_ptr<Arduino_DataBus> bus, std::shared_ptr<Arduino_GFX> gfx, std::shared_ptr<TextPrinter> printer, std::shared_ptr<Themeinator> themeinator)
 {
     Serial.println("Screen controller starting.");
-    bus = std::make_shared<Arduino_HWSPI>(
-        cfg->PIN_DC_TFT,
-        cfg->PIN_CS_TFT,
-        cfg->PIN_SCK_TFT,
-        cfg->PIN_MOSI_TFT,
-        cfg->PIN_MISO_TFT);
-
-    gfx = std::make_shared<Arduino_ILI9341>(bus.get(), cfg->PIN_RST_TFT);
+    this->bus = bus;
+    this->gfx = gfx;
+    this->textPrinter = printer;
     this->themeinator = themeinator;
-
     textPrinter = std::make_shared<TextPrinter>(themeinator, gfx);
 
     gfx->begin();
