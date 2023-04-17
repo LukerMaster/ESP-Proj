@@ -1,5 +1,12 @@
 #include "Program.h"
 
+Program::Program(std::shared_ptr<ScreenController> screenCtrl, std::shared_ptr<ThemeLightController> themeCtrl)
+{
+    Serial.println("ESP Program starting.");
+    this->screenController = screenCtrl;
+    this->themeLightController = themeCtrl;
+}
+
 void Program::SetTickRate(uint32_t tickRate)
 {
     _TickRate = tickRate;
@@ -7,13 +14,7 @@ void Program::SetTickRate(uint32_t tickRate)
 
 void Program::Start()
 {
-    Serial.println("ESP Program starting.");
-    cfg = std::make_shared<Configuration>();
-
-    std::shared_ptr<Themeinator> themeinator = std::make_shared<Themeinator>();
-    themeLightController = std::make_shared<ThemeLightController>(cfg->PIN_PHOTORESISTOR_INPUT, themeinator);
-    screenController = std::make_shared<ScreenController>(cfg, themeinator);
-    
+    Serial.println("Start called.");
 }
 
 uint32_t Program::GetTickRate()

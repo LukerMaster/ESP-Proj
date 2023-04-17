@@ -14,6 +14,7 @@ class Program
     
     uint32_t _TickRate;
 public:
+    Program(std::shared_ptr<ScreenController> screenCtrl, std::shared_ptr<ThemeLightController> themeCtrl);
     void SetTickRate(uint32_t tickRate = 20);
     uint32_t GetTickRate();
     void Start();

@@ -16,11 +16,11 @@ void ThemeLightController::SetPhotoResistorPin(uint8_t pin)
 void ThemeLightController::UpdateTheme()
 {
     uint16_t darkness = analogRead(_PhotoresistorPin);
-    if (darkness > 1200 && themeinator->CurrentTheme != Theme::Dark)
+    if (darkness > 1400 && themeinator->CurrentTheme != Theme::Dark)
     {
         themeinator->CurrentTheme = Theme::Dark;
     }
-    if (darkness <= 1200 && themeinator->CurrentTheme != Theme::Standard)
+    if (darkness <= 1400 && themeinator->CurrentTheme != Theme::Standard)
     {
         themeinator->CurrentTheme = Theme::Standard;
     }
