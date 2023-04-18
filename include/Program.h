@@ -21,6 +21,8 @@ class Program
 
     uint32_t _TickRate;
 
+    uint32_t _millisSinceLastTempMeasurement;
+
     std::vector<std::shared_ptr<INotifiable>> screenWidgets;
     std::shared_ptr<WatchedValue<float>> temperature;
     std::shared_ptr<WatchedValue<uint64_t>> rpm;
