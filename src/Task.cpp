@@ -86,6 +86,12 @@ void Task::stop() {
 	::vTaskDelete(temp);
 } // stop
 
+bool Task::isDone()
+{
+    if (m_handle == nullptr) return true;
+	return eTaskGetState(m_handle) == eDeleted;
+}
+
 /**
  * @brief Set the stack size of the task.
  *
