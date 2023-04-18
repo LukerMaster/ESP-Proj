@@ -15,20 +15,13 @@ public:
     void setFn(std::function<void()> fn);
 	void start(void* taskData = nullptr);
 	void stop();
-	/**
-	 * @brief Body of the task to execute.
-	 *
-	 * This function must be implemented in the subclass that represents the actual task to run.
-	 * When a task is started by calling start(), this is the code that is executed in the
-	 * newly created task.
-	 *
-	 * @param [in] data The data passed in to the newly started task.
-	 */
+	bool isDone();
+	
 	static void delay(int ms);
 
 private:
 
-	virtual void run(void* data); // Make run pure virtual
+	virtual void run(void* data);
 	xTaskHandle m_handle;
 	void*       m_taskData;
 	static void runTask(void* data);
