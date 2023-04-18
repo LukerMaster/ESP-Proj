@@ -1,15 +1,14 @@
 #pragma once
 #include <functional>
 #include <thread>
-
+#include "Task.h"
 
 class AsyncTaskScheduler
 {
-    std::shared_ptr<std::thread> thread;
+    Task task;
 public:
     void QueueAsyncTask(std::function<void()> task);
     void Join();
-    bool IsJoinable();
 };
 
 

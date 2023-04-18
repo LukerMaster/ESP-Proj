@@ -2,15 +2,12 @@
 
 void AsyncTaskScheduler::QueueAsyncTask(std::function<void()> task)
 {
-    thread = std::make_shared<std::thread>(task);
+    this->task.setFn(task);
+    this->task.setPriority(0);
+    this->task.start();
 }
 
 void AsyncTaskScheduler::Join()
 {
-    thread->join();
-}
-
-bool AsyncTaskScheduler::IsJoinable()
-{
-    return thread->joinable();
+    task.stop();
 }

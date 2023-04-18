@@ -47,10 +47,7 @@ void Program::Start()
     
     RefreshWidgets();
 
-    scheduler.QueueAsyncTask([this]()
-    {
-        thermometer->MeasureTemperature();
-    });
+    
 
 }
 
@@ -61,7 +58,7 @@ uint32_t Program::GetTickRate()
 
 void Program::Tick(uint64_t millisDelta)
 {
-
+  _millisSinceLastTempMeasurement += millisDelta;
   if (photoresistor->GetLightLevel() < 0.3f && colorinator->CurrentTheme != Theme::Dark)
   {
     colorinator->CurrentTheme = Theme::Dark;
@@ -79,14 +76,15 @@ void Program::Tick(uint64_t millisDelta)
     RefreshWidgets();
   }
 
-    if (scheduler.IsJoinable())
+    if (_millisSinceLastTempMeasurement > 5000)
     {
-        scheduler.Join();
         scheduler.QueueAsyncTask([this]()
-    {
-        thermometer->MeasureTemperature();
-    });
+        {
+            thermometer->MeasureTemperature();
+        });
+        _millisSinceLastTempMeasurement = 0;
     }
+    
 
     temperature->Set(thermometer->GetLastMeasurement());
   rpm->Set(rpm->Get() + millisDelta);
