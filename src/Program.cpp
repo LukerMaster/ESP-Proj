@@ -1,12 +1,16 @@
 #include "Program.h"
 
-Program::Program(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor)
+Program::Program(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor,
+std::shared_ptr<ThermometerReader> thermometer)
 {
     Serial.println("ESP Program starting.");
     this->screen = screen;
     this->photoresistor = photoresistor;
+    this->thermometer = thermometer;
 
     this->colorinator = std::unique_ptr<Colorinator>(new Colorinator());
+
+    
 }
 
 void Program::SetTickRate(uint32_t tickRate)
@@ -22,12 +26,12 @@ void Program::Start()
     screen->SetBgColor(colorinator->GetBgColor());
     screen->FillScreen(colorinator->GetBgColor());
 
-    opTimeSeconds = std::make_shared<WatchedValue<uint64_t>>();
-    opTimeSeconds->OnValueChanged = [this] (uint64_t value)
+    temperature = std::make_shared<WatchedValue<float>>();
+    temperature->OnValueChanged = [this] (float value)
     {
-        screen->SetTextPosition(10, 10);
+        screen->SetTextPosition(5, 5);
         screen->SetTextScale(2);
-        screen->DrawText("Op time: " + std::to_string(value) + "s");
+        screen->DrawText(std::to_string(value).substr(0, std::to_string(value).find(".") + 2) + "C");
     };
 
     rpm = std::make_shared<WatchedValue<uint64_t>>();
@@ -38,10 +42,16 @@ void Program::Start()
         screen->DrawText(std::to_string(value) + "RPM");
     };
 
-    screenWidgets.push_back(opTimeSeconds);
+    screenWidgets.push_back(temperature);
     screenWidgets.push_back(rpm);
     
     RefreshWidgets();
+
+    scheduler.QueueAsyncTask([this]()
+    {
+        thermometer->MeasureTemperature();
+    });
+
 }
 
 uint32_t Program::GetTickRate()
@@ -51,8 +61,8 @@ uint32_t Program::GetTickRate()
 
 void Program::Tick(uint64_t millisDelta)
 {
-  
-  if (photoresistor->GetLightLevel() < 0.7f && colorinator->CurrentTheme != Theme::Dark)
+
+  if (photoresistor->GetLightLevel() < 0.3f && colorinator->CurrentTheme != Theme::Dark)
   {
     colorinator->CurrentTheme = Theme::Dark;
     screen->FillScreen(colorinator->GetBgColor());
@@ -60,7 +70,7 @@ void Program::Tick(uint64_t millisDelta)
     screen->SetBgColor(colorinator->GetBgColor());
     RefreshWidgets();
   }
-  else if (photoresistor->GetLightLevel() >= 0.7f && colorinator->CurrentTheme != Theme::Standard)
+  else if (photoresistor->GetLightLevel() >= 0.3f && colorinator->CurrentTheme != Theme::Standard)
   {
     colorinator->CurrentTheme = Theme::Standard;
     screen->FillScreen(colorinator->GetBgColor());
@@ -69,7 +79,19 @@ void Program::Tick(uint64_t millisDelta)
     RefreshWidgets();
   }
 
+    if (scheduler.IsJoinable())
+    {
+        scheduler.Join();
+        scheduler.QueueAsyncTask([this]()
+    {
+        thermometer->MeasureTemperature();
+    });
+    }
+
+    temperature->Set(thermometer->GetLastMeasurement());
   rpm->Set(rpm->Get() + millisDelta);
+
+  
 }
 
 void Program::RefreshWidgets()

@@ -1,5 +1,6 @@
 #pragma once
 #include "INotifiable.h"
+#include <atomic>
 
 template<typename T>
 class WatchedValue : public INotifiable

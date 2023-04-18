@@ -11,7 +11,7 @@ void setup() {
   ProgramFactory f;
   Serial.begin(115200);
   p = f.CreateProgram();
-  p->SetTickRate(20);
+  p->SetTickRate(16);
   p->Start();
 }
 

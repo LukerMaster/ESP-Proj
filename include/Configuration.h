@@ -11,4 +11,6 @@ public:
   uint8_t PIN_MISO_TFT = 12;
   uint8_t PIN_RST_TFT = 17;
   uint8_t PIN_PHOTORESISTOR_INPUT = 2;
+
+  uint8_t PIN_THERMOMETER_ONE_WIRE_INPUT = 4;
 };
