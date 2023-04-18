@@ -51,7 +51,7 @@ uint32_t Program::GetTickRate()
 
 void Program::Tick(uint64_t millisDelta)
 {
-  if (photoresistor->GetLightLevel() < 0.3f && colorinator->CurrentTheme != Theme::Dark)
+  if (photoresistor->GetLightLevel() < 0.22f && colorinator->CurrentTheme != Theme::Dark)
   {
     colorinator->CurrentTheme = Theme::Dark;
     screen->FillScreen(colorinator->GetBgColor());
@@ -59,7 +59,7 @@ void Program::Tick(uint64_t millisDelta)
     screen->SetBgColor(colorinator->GetBgColor());
     RefreshWidgets();
   }
-  else if (photoresistor->GetLightLevel() >= 0.3f && colorinator->CurrentTheme != Theme::Standard)
+  else if (photoresistor->GetLightLevel() >= 0.22f && colorinator->CurrentTheme != Theme::Standard)
   {
     colorinator->CurrentTheme = Theme::Standard;
     screen->FillScreen(colorinator->GetBgColor());
