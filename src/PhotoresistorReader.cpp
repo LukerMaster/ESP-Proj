@@ -10,5 +10,5 @@ float PhotoresistorReader::GetLightLevel()
 {
     uint16_t darkness = analogRead(photoresistorPin);
     darkness = darkness / 18; // 1800 is really dark, so set it to be 100% dark.
-    return std::max(100 - darkness, 0);
+    return (float)(std::max(100 - darkness, 0))/100.0f;
 }

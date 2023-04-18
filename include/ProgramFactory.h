@@ -1,3 +1,4 @@
+#pragma once
 #include <Program.h>
 #include <Configuration.h>
 
