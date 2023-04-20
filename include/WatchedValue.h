@@ -22,7 +22,8 @@ inline void WatchedValue<T>::Set(T new_value)
 {
     if (new_value != value)
     {
-        OnValueChanged(new_value);
+        if (OnValueChanged != nullptr)
+            OnValueChanged(new_value);
     }
     value = new_value;
 }
@@ -36,5 +37,8 @@ inline T WatchedValue<T>::Get()
 template <typename T>
 inline void WatchedValue<T>::Notify()
 {
-    OnValueChanged(value);
+    if (OnValueChanged != nullptr)
+        OnValueChanged(value);
+    else
+        Serial.println("Warning: Value notified but no function assigned.");
 }
