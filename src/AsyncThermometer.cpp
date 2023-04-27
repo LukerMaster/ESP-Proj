@@ -3,7 +3,7 @@
 AsyncThermometer::AsyncThermometer(uint8_t thermometerPin)
 {
     oneWireDriver = std::make_shared<DS18B20>(thermometerPin);
-
+    lastTemperature = 0.0f;
     measureTask.setPriority(0);
     measureTask.setName("Temperature Measurement");
     measureTask.setStackSize(10000);

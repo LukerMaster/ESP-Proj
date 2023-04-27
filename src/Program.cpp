@@ -1,16 +1,17 @@
 #include "Program.h"
 
 Program::Program(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor,
-std::shared_ptr<AsyncThermometer> thermometer)
+std::shared_ptr<AsyncThermometer> thermometer,
+std::shared_ptr<AnalogReader> analog)
 {
     Serial.println("ESP Program starting.");
     this->screen = screen;
     this->photoresistor = photoresistor;
     this->thermometer = thermometer;
+    this->analog = analog;
 
     this->colorinator = std::unique_ptr<Colorinator>(new Colorinator());
-    this->carInfo = std::make_shared<CarInfo>();
-    this->randomInputs = std::make_shared<RandomCarInput>(carInfo);
+    this->carInputs = std::make_shared<CarSimulation>();
 
     Serial.println("Preparation of the program started.");
 
@@ -31,12 +32,12 @@ std::shared_ptr<AsyncThermometer> thermometer)
     {
         this->screen->SetTextPosition(10, 30);
         this->screen->SetTextScale(1);
-        this->screen->DrawText("RPM:" + std::to_string(value));
+        this->screen->DrawText("RPM:" + std::to_string(value), 10);
         this->screen->DrawProgressBar(10, 
         40, 
         this->screen->GetScreenSizeX()-20, 
         50, 
-        (float)value / carInfo->GetMaxRpm());
+        (float)value / carInputs->GetMaxRpm());
     };
 
     this->kmph = std::make_shared<WatchedValue<uint32_t>>();
@@ -44,7 +45,7 @@ std::shared_ptr<AsyncThermometer> thermometer)
     {
         this->screen->SetTextPosition(20, 150);
         this->screen->SetTextScale(8);
-        this->screen->DrawText(std::to_string(value));
+        this->screen->DrawText(std::to_string(value), 3);
         
         this->screen->SetTextPosition(this->screen->GetScreenSizeX() - 80, 150);
         this->screen->SetTextScale(3);
@@ -132,13 +133,19 @@ void Program::Tick(uint64_t millisDelta)
     RefreshWidgets();
   }
 
-  randomInputs->AddTime(millisDelta);
+  float throttle = 3.3333f * std::max(0.7f, analog->GetY()) - 2.3333f; // lerp (0.7 to 1 -> 0 -> 1)
+  carInputs->SetThrottle(throttle);
+
+  carInputs->Tick((float)millisDelta / 1000.0f);
+  
+
 
   ReadCarValuesToWidgets();
 }
 
 void Program::RefreshWidgets()
 {
+    screen->FillScreen(colorinator->GetBgColor());
     std::for_each(screenWidgets.begin(), screenWidgets.end(), [](std::shared_ptr<INotifiable> obj) { obj->Notify(); });
 }
 
@@ -146,10 +153,10 @@ void Program::RefreshWidgets()
 void Program::ReadCarValuesToWidgets()
 {
     temperature->Set(thermometer->GetTemperature());
-    rpm->Set(carInfo->GetEngineRpm());
-    kmph->Set(carInfo->GetSpeed());
-    gear->Set(carInfo->GetCurrentGear());
-    fuelPercentage->Set(carInfo->GetFuelPercentage());
-    odometer->Set(carInfo->GetOdometerReading());
-    tripometer->Set(carInfo->GetTripometerReading());
+    rpm->Set(carInputs->GetRpm());
+    kmph->Set(carInputs->GetSpeedKmh());
+    gear->Set(carInputs->GetGear());
+    fuelPercentage->Set(carInputs->GetFuelLeft());
+    odometer->Set(carInputs->GetOdometer());
+    tripometer->Set(carInputs->GetOdometer());
 }

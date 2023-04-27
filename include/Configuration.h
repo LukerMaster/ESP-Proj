@@ -13,4 +13,7 @@ public:
   uint8_t PIN_PHOTORESISTOR_INPUT = 2;
 
   uint8_t PIN_THERMOMETER_ONE_WIRE_INPUT = 4;
+
+  uint8_t PIN_ANALOG_X = 35;
+  uint8_t PIN_ANALOG_Y = 34;
 };

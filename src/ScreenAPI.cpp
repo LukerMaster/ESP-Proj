@@ -45,13 +45,18 @@ void ScreenAPI::SetBgColor(uint16_t color)
     this->bg_color_565RGB = color;
 }
 
-void ScreenAPI::DrawText(std::string text)
+void ScreenAPI::DrawText(std::string text, uint32_t textSizeOverride = 1)
 {
-    gfx->fillRect(pos_x, pos_y, letter_width*text_size*text.size(), letter_height*text_size, bg_color_565RGB);
+    gfx->fillRect(pos_x, pos_y, letter_width*text_size*textSizeOverride, letter_height*text_size, bg_color_565RGB);
     gfx->setCursor(pos_x, pos_y);
     gfx->setTextColor(fg_color_565RGB);
     gfx->setTextSize(text_size);
     gfx->println(text.c_str());
+}
+
+void ScreenAPI::DrawText(std::string text)
+{
+    DrawText(text, text.size());
 }
 
 void ScreenAPI::DrawProgressBar(int32_t x, int32_t y, int32_t w, int32_t h, float fillPercent)
@@ -64,5 +69,6 @@ void ScreenAPI::DrawProgressBar(int32_t x, int32_t y, int32_t w, int32_t h, floa
 
 void ScreenAPI::FillScreen(uint16_t color)
 {
+    Serial.println("Fill screen!");
     gfx->fillScreen(color);
 }

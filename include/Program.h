@@ -4,9 +4,10 @@
 #include <vector>
 
 #include "CarInfo.h"
-#include "RandomCarInput.h"
+#include "CarSimulation.h"
 
 #include "ScreenAPI.h"
+#include "AnalogReader.h"
 #include "PhotoresistorReader.h"
 #include "AsyncThermometer.h"
 #include "Colorinator.h"
@@ -20,9 +21,9 @@ class Program
     std::shared_ptr<ScreenAPI> screen;
     std::shared_ptr<PhotoresistorReader> photoresistor;
     std::shared_ptr<AsyncThermometer> thermometer;
+    std::shared_ptr<AnalogReader> analog;
 
     std::unique_ptr<Colorinator> colorinator;
-    std::shared_ptr<CarInfo> carInfo;
 
     std::vector<std::shared_ptr<INotifiable>> screenWidgets;
 
@@ -34,15 +35,18 @@ class Program
     std::shared_ptr<WatchedValue<uint64_t>> odometer;
     std::shared_ptr<WatchedValue<uint64_t>> tripometer;
 
-    std::shared_ptr<RandomCarInput> randomInputs;
+    std::shared_ptr<CarSimulation> carInputs;
 
 public:
-    Program(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor, std::shared_ptr<AsyncThermometer> thermometer);
+    Program(std::shared_ptr<ScreenAPI> screen, 
+    std::shared_ptr<PhotoresistorReader> photoresistor, 
+    std::shared_ptr<AsyncThermometer> thermometer, 
+    std::shared_ptr<AnalogReader> analog);
+
     void SetTickRate(uint32_t tickRate = 20);
     uint32_t GetTickRate();
     void Tick(uint64_t millisDelta);
 protected:
     void RefreshWidgets();
-    void AddRandomInputsToCar(float millisDelta);
     void ReadCarValuesToWidgets();
 };
