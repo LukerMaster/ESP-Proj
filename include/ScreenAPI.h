@@ -22,6 +22,7 @@ public:
     void SetTextScale(uint32_t size);
     void SetFgColor(uint16_t color);
     void SetBgColor(uint16_t color);
+    void DrawText(std::string text, uint32_t textSizeOverride);
     void DrawText(std::string text);
     void DrawProgressBar(int32_t x, int32_t y, int32_t w, int32_t h, float fillPercent);
 

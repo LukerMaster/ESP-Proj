@@ -17,7 +17,7 @@ std::shared_ptr<Program> ProgramFactory::CreateProgram()
     auto screenAPI = std::make_shared<ScreenAPI>(bus, gfx);
     auto photoresistorReader = std::make_shared<PhotoresistorReader>(cfg->PIN_PHOTORESISTOR_INPUT);
     auto thermometerReader = std::make_shared<AsyncThermometer>(cfg->PIN_THERMOMETER_ONE_WIRE_INPUT);
+    auto analog = std::make_shared<AnalogReader>(cfg->PIN_ANALOG_X, cfg->PIN_ANALOG_Y);
     
-    
-    return std::make_shared<Program>(screenAPI, photoresistorReader, thermometerReader);
+    return std::make_shared<Program>(screenAPI, photoresistorReader, thermometerReader, analog);
 }
