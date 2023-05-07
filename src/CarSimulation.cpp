@@ -2,7 +2,7 @@
 
 float CarSimulation::GetGearMult(int16_t gear)
 {
-    float finalDrive = 0.009f;
+    float finalDrive = 0.014f;
     switch (gear)
     {
         case 1:
@@ -12,33 +12,42 @@ float CarSimulation::GetGearMult(int16_t gear)
         case 3:
             return 3.0f * finalDrive;
         case 4:
-            return 4.2f * finalDrive;
-        case 5:
-            return 5.0f * finalDrive;
-        case 6:
-            return 5.8f * finalDrive;
-        case 7:
-            return 6.4f * finalDrive;
+            return 3.6f * finalDrive;
         default:
-            return ((gear * 0.4f) + 3.6f) * finalDrive;
+            return (((gear-4) * 0.4f) + 3.6f) * finalDrive;
     }
+}
+
+float CarSimulation::GetRpmRaiseSpeedPenalty(int16_t gear)
+{
+    return 2.f / (gear*gear + 1);
 }
 
 void CarSimulation::Tick(float deltaTime)
 {
-    if (throttleValue > 0.02f)
+    if (throttleValue > 0.02f && fuel > 0)
     {
-        rpm += throttleValue * deltaTime * rpmRaiseSpeed;
+        rpm += throttleValue * deltaTime * rpmRaiseSpeed * GetRpmRaiseSpeedPenalty(gear);
     }
     else
     {
         if (rpm > deltaTime * rpmRaiseSpeed * 0.5f)
-            rpm -= deltaTime * rpmRaiseSpeed * 0.5f;
+            rpm -= deltaTime * rpmRaiseSpeed * 0.5f * GetRpmRaiseSpeedPenalty(gear);
     }
+
+    if (brakeValue > 0.02f)
+    {
+        rpm -= brakeValue * deltaTime * rpmRaiseSpeed;
+    }
+
+    if (rpm < 0)
+    {
+        rpm = 0;
+    };
 
     speed = rpm * GetGearMult(gear);
 
-    if (rpm > maxRpm * 0.87f)
+    if (rpm > maxRpm * 0.94f)
     {
         if (gear < maxGear)
         {
@@ -59,12 +68,17 @@ void CarSimulation::Tick(float deltaTime)
     }
 
     odometer += speed * deltaTime / 3600;
-    fuel -= rpm * deltaTime * 0.001f;
+    fuel -= rpm * deltaTime * 0.00002f;
 }
 
 void CarSimulation::SetThrottle(float throttle)
 {
     throttleValue = throttle;
+}
+
+void CarSimulation::SetBrake(float brake)
+{
+    brakeValue = brake;
 }
 
 float CarSimulation::GetSpeedKmh()
