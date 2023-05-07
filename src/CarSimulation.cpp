@@ -40,6 +40,11 @@ void CarSimulation::Tick(float deltaTime)
         rpm -= brakeValue * deltaTime * rpmRaiseSpeed;
     }
 
+    if (brakeValue > 0.02f)
+    {
+        rpm -= brakeValue * deltaTime * rpmRaiseSpeed;
+    }
+
     if (rpm < 0)
     {
         rpm = 0;
