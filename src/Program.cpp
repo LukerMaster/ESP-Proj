@@ -136,9 +136,11 @@ void Program::Tick(uint64_t millisDelta)
   float throttle = 3.3333f * std::max(0.7f, analog->GetY()) - 2.3333f; // lerp (0.7 to 1 -> 0 -> 1)
   carInputs->SetThrottle(throttle);
 
-  carInputs->Tick((float)millisDelta / 1000.0f);
-  
 
+  float brake = -3 * (std::min(0.33f, analog->GetY())-1) - 2; // lerp (0.33 to 0 -> 0 -> 1)
+  carInputs->SetBrake(brake);
+
+  carInputs->Tick((float)millisDelta / 1000.0f);
 
   ReadCarValuesToWidgets();
 }
