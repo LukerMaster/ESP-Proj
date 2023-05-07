@@ -27,12 +27,17 @@ void CarSimulation::Tick(float deltaTime)
 {
     if (throttleValue > 0.02f && fuel > 0)
     {
-        rpm += throttleValue * deltaTime * (rpmRaiseSpeed * GetRpmRaiseSpeedPenalty(gear));
+        rpm += throttleValue * deltaTime * rpmRaiseSpeed * GetRpmRaiseSpeedPenalty(gear);
     }
     else
     {
         if (rpm > deltaTime * rpmRaiseSpeed * 0.5f)
-            rpm -= deltaTime * rpmRaiseSpeed * 0.5f;
+            rpm -= deltaTime * rpmRaiseSpeed * 0.5f * GetRpmRaiseSpeedPenalty(gear);
+    }
+
+    if (brakeValue > 0.02f)
+    {
+        rpm -= brakeValue * deltaTime * rpmRaiseSpeed;
     }
 
     if (brakeValue > 0.02f)
