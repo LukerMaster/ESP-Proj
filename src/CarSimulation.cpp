@@ -2,7 +2,7 @@
 
 float CarSimulation::GetGearMult(int16_t gear)
 {
-    float finalDrive = 0.014f;
+    float finalDrive = 0.013f;
     switch (gear)
     {
         case 1:
