@@ -69,6 +69,5 @@ void ScreenAPI::DrawProgressBar(int32_t x, int32_t y, int32_t w, int32_t h, floa
 
 void ScreenAPI::FillScreen(uint16_t color)
 {
-    Serial.println("Fill screen!");
     gfx->fillScreen(color);
 }
