@@ -15,4 +15,4 @@ Connections to data pins of inputs and outputs and ESP32 GPIO pins are currently
 
 ### Notes
 - Keep in mind to add 4.7kOhm resistor between 3.3V pin and data line pin of One-Wire thermometer.
-- Do NOT use any of the ADC2 pins for IO operations if you want to use WiFi. Default pin setup does not have this issue (Tested on ESP32 DevKitV1).
+- IF you want to change the default pin setup defined in Configuration.h - do NOT use any of the ADC2 pins for IO operations if you want to use WiFi. Default pin setup does not have this issue (Tested on ESP32 DevKitV1).
