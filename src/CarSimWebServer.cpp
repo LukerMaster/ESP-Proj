@@ -12,7 +12,7 @@ CarSimWebServer::CarSimWebServer(std::shared_ptr<CarSimulation> carData, std::st
             delay(4500);
             Serial.println("Connecting to WiFi...");
             if (wifiPass == "PASSWORD" || wifiPass == "")
-                Serial.print("Password is either set to default or empty. It is very unlikely that connection succeeds.\nChange password in Configuration header file if neccessary.");
+                Serial.println("Password is either set to default or empty. It is very unlikely that connection succeeds.\nChange password in Configuration header file if neccessary.");
         }
         Serial.println("Connected!");
         Serial.println("IP Address:");
@@ -47,7 +47,7 @@ CarSimWebServer::CarSimWebServer(std::shared_ptr<CarSimulation> carData, std::st
         { 
             request->send(200, "application/json", std::to_string(this->carData->GetFuelLeft()).c_str()); 
         });
-        
+
         server.begin();
     });
     connectionTask.start();
