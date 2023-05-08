@@ -13,4 +13,6 @@ Simple school project that uses ESP32 and ILI9341 screen to do various input and
 ### Connection
 Connections to data pins of inputs and outputs and ESP32 GPIO pins are currently described in Configuration.h file and can be freely changed to suit your board better. Any other connections are just ILI9431 LED pin -> 3.3V and all the Vcc and GND pins of inputs and outputs are connected to one main rail from the ESP32 3.3V pin in parallel.
 
-Keep in mind to add 4.7kOhm resistor between 3.3V pin and data line pin of One-Wire thermometer.
+### Notes
+- Keep in mind to add 4.7kOhm resistor between 3.3V pin and data line pin of One-Wire thermometer.
+- Do NOT use any of the ADC2 pins for IO operations if you want to use WiFi. Default pin setup does not have this issue (Tested on ESP32 DevKitV1).
