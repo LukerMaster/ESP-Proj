@@ -11,10 +11,10 @@
 /// @brief Responsible for monitoring the car simulation and responding for server calls.
 class CarSimWebServer
 {
-    std::shared_ptr<CarSimulation> carData;
+    std::shared_ptr<CarInfo> carData;
     AsyncWebServer server;
     Task connectionTask;
     public:
-    CarSimWebServer(std::shared_ptr<CarSimulation> programToMonitor, std::string ssid, std::string wifiPass);
+    CarSimWebServer(std::shared_ptr<CarInfo> programToMonitor, std::string ssid, std::string wifiPass);
     void Tick();
 };

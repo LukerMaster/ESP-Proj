@@ -3,14 +3,16 @@
 PhysicalIOLogic::PhysicalIOLogic(std::shared_ptr<ScreenAPI> screen, std::shared_ptr<PhotoresistorReader> photoresistor,
 std::shared_ptr<AsyncThermometer> thermometer,
 std::shared_ptr<AnalogReader> analog,
-std::shared_ptr<CarSimulation> carInputs)
+std::shared_ptr<CarSimulation> simulation,
+std::shared_ptr<CarInfo> carData)
 {
     Serial.println("ESP Program starting.");
     this->screen = screen;
     this->photoresistor = photoresistor;
     this->thermometer = thermometer;
     this->analog = analog;
-    this->carInputs = carInputs;
+    this->simulation = simulation;
+    this->carData = carData;
 
     this->colorinator = std::unique_ptr<Colorinator>(new Colorinator());
 
@@ -38,7 +40,7 @@ std::shared_ptr<CarSimulation> carInputs)
         40, 
         this->screen->GetScreenSizeX()-20, 
         50, 
-        (float)value / this->carInputs->GetMaxRpm());
+        (float)value / this->carData->GetMaxRpm());
     };
 
     this->kmph = std::make_shared<WatchedValue<uint32_t>>();
@@ -124,11 +126,11 @@ void PhysicalIOLogic::PerformIO()
   }
 
   float throttle = 3.3333f * std::max(0.7f, analog->GetY()) - 2.3333f; // lerp (0.7 to 1 -> 0 -> 1)
-  carInputs->SetThrottle(throttle);
+  carData->SetThrottleInput(throttle);
 
 
   float brake = -3 * (std::min(0.33f, analog->GetY())-1) - 2; // lerp (0.33 to 0 -> 0 -> 1)
-  carInputs->SetBrake(brake);
+  carData->SetBrakeInput(brake);
 
 
   ReadCarValuesToWidgets();
@@ -144,10 +146,10 @@ void PhysicalIOLogic::RefreshWidgets()
 void PhysicalIOLogic::ReadCarValuesToWidgets()
 {
     temperature->Set(thermometer->GetTemperature());
-    rpm->Set(carInputs->GetRpm());
-    kmph->Set(carInputs->GetSpeedKmh());
-    gear->Set(carInputs->GetGear());
-    fuelPercentage->Set(carInputs->GetFuelLeft());
-    odometer->Set(carInputs->GetOdometer());
-    tripometer->Set(carInputs->GetOdometer());
+    rpm->Set(carData->GetEngineRpm());
+    kmph->Set(carData->GetSpeed());
+    gear->Set(carData->GetCurrentGear());
+    fuelPercentage->Set(carData->GetFuel() / carData->GetTankCapacity());
+    odometer->Set(carData->GetOdometerReading());
+    tripometer->Set(carData->GetTripometerReading());
 }

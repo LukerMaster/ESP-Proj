@@ -1,36 +1,57 @@
 #pragma once
 #include <inttypes.h>
+#include <stdexcept>
 
 class CarInfo
 {
 protected:
-    uint16_t kmph = 0;
-    float fuelPercentage = 1.0f;
-    uint32_t rpm = 0;
-    uint32_t maxRpm = 6000;
-    uint64_t odometer = 0;
-    uint64_t tripometer = 0;
-    int16_t oilTempC = 0;
-    int16_t maxOilTempC = 130;
+    float kmph = 0;
+    float fuel = 0;
+    float fuelTankCapacity = 0;
+    float rpm = 0;
+    float maxRpm = 6000;
+    float odometer = 0;
+    float tripometer = 0;
+    float oilTempC = 0;
+    float maxOilTempC = 130;
     int16_t gear = 0;
     int16_t topGear = 6;
+
+    float throttlePressValue = 0;
+    float brakePressValue = 0;
+
+    float rpmRaiseSpeed = 0;
+
+    float insideTempReading = 0;
 public:
-    void SetSpeed(uint16_t kmph);
-    uint16_t GetSpeed();
-    void SetFuelPercentage(float percentage);
-    float GetFuelPercentage();
-    void SetEngineRpm(uint32_t rpm);
-    uint32_t GetEngineRpm();
-    void SetOdometer(uint64_t kms);
-    uint64_t GetOdometerReading();
-    void SetTripometer(uint64_t kms);
-    uint64_t GetTripometerReading();
-    void SetOilTempC(int16_t tempC);
-    int16_t GetOilTempC();
+
+    void SetThrottleInput(float value);
+    float GetThrottleInput();
+    void SetBrakeInput(float value);
+    float GetBrakeInput();
+    void SetRpmRaiseSpeed(float rpmPerSec);
+    float GetRpmRaiseSpeed();
+
+    float GetInsideTemperature();
+    void SetInsideTemperature(float tempC);
+    void SetSpeed(float kmph);
+    float GetSpeed();
+    void SetFuel(float liters);
+    float GetFuel();
+    void SetTankCapacity(float liters);
+    float GetTankCapacity();
+    void SetEngineRpm(float rpm);
+    float GetEngineRpm();
+    void SetOdometer(float kms);
+    float GetOdometerReading();
+    void SetTripometer(float kms);
+    float GetTripometerReading();
+    void SetOilTempC(float tempC);
+    float GetOilTempC();
     void SetCurrentGear(int16_t gear);
     int16_t GetCurrentGear();
     void SetNumOfForwardGears(int16_t gears);
     int16_t GetNumOfForwardGears();
-    void SetMaxRpm(int32_t maxRpm);
-    int32_t GetMaxRpm();
+    void SetMaxRpm(float maxRpm);
+    float GetMaxRpm();
 };

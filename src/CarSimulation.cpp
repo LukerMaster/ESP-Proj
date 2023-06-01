@@ -25,93 +25,55 @@ float CarSimulation::GetRpmRaiseSpeedPenalty(int16_t gear)
 
 void CarSimulation::Tick(float deltaTime)
 {
-    if (throttleValue > 0.02f && fuel > 0)
+    Serial.println(carData->GetThrottleInput());
+    if (carData->GetThrottleInput() > 0.02f && carData->GetFuel() > 0)
     {
-        rpm += throttleValue * deltaTime * rpmRaiseSpeed * GetRpmRaiseSpeedPenalty(gear);
+        carData->SetEngineRpm(carData->GetEngineRpm() + carData->GetThrottleInput() * deltaTime * carData->GetRpmRaiseSpeed() * GetRpmRaiseSpeedPenalty(carData->GetCurrentGear()));
     }
     else
     {
-        if (rpm > deltaTime * rpmRaiseSpeed * 0.5f)
-            rpm -= deltaTime * rpmRaiseSpeed * 0.5f * GetRpmRaiseSpeedPenalty(gear);
+        if (carData->GetEngineRpm() > deltaTime * carData->GetRpmRaiseSpeed() * 0.5f)
+            carData->SetEngineRpm(carData->GetEngineRpm() - deltaTime * carData->GetRpmRaiseSpeed() * 0.5f * GetRpmRaiseSpeedPenalty(carData->GetCurrentGear()));
     }
 
-    if (brakeValue > 0.02f)
+    if (carData->GetBrakeInput() > 0.02f)
     {
-        rpm -= brakeValue * deltaTime * rpmRaiseSpeed;
+        carData->SetEngineRpm(carData->GetEngineRpm() - carData->GetBrakeInput() * deltaTime * carData->GetRpmRaiseSpeed());
     }
 
-    if (brakeValue > 0.02f)
+    if (carData->GetBrakeInput() > 0.02f)
     {
-        rpm -= brakeValue * deltaTime * rpmRaiseSpeed;
+        carData->SetEngineRpm(carData->GetEngineRpm() - carData->GetBrakeInput() * deltaTime * carData->GetRpmRaiseSpeed());
     }
 
-    if (rpm < 0)
+    if (carData->GetEngineRpm() < 0)
     {
-        rpm = 0;
+        carData->SetEngineRpm(0);
     };
 
-    speed = rpm * GetGearMult(gear);
+    carData->SetSpeed(carData->GetEngineRpm() * GetGearMult(carData->GetCurrentGear()));
 
-    if (rpm > maxRpm * 0.94f)
+    if (carData->GetEngineRpm() > carData->GetMaxRpm() * 0.94f)
     {
-        if (gear < maxGear)
+        if (carData->GetCurrentGear() < carData->GetNumOfForwardGears())
         {
-            gear += 1;
-            rpm = speed / GetGearMult(gear);
+            carData->SetCurrentGear(carData->GetCurrentGear() + 1);
+            carData->SetEngineRpm( carData->GetSpeed() / GetGearMult(carData->GetCurrentGear()));
         }
             
-        else if (rpm > maxRpm)
-            rpm = maxRpm;
+        else if (carData->GetEngineRpm() > carData->GetMaxRpm())
+            carData->SetEngineRpm(carData->GetMaxRpm());
     }
-    else if (rpm < maxRpm * 0.4f)
+    else if (carData->GetEngineRpm() < carData->GetMaxRpm() * 0.4f)
     {
-        if (gear > 1)
+        if (carData->GetCurrentGear() > 1)
         {
-            gear -= 1;
-            rpm = speed / GetGearMult(gear);
+            carData->SetCurrentGear(carData->GetCurrentGear() - 1);
+            carData->SetEngineRpm(carData->GetSpeed() / GetGearMult(carData->GetCurrentGear()));
         }
     }
 
-    odometer += speed * deltaTime / 3600;
-    fuel -= rpm * deltaTime * 0.00002f;
+    carData->SetOdometer(carData->GetOdometerReading() + carData->GetSpeed() * deltaTime / 3600);
+    carData->SetFuel(carData->GetFuel() - carData->GetEngineRpm() * deltaTime * 0.00002f);
 }
 
-void CarSimulation::SetThrottle(float throttle)
-{
-    throttleValue = throttle;
-}
-
-void CarSimulation::SetBrake(float brake)
-{
-    brakeValue = brake;
-}
-
-float CarSimulation::GetSpeedKmh()
-{
-    return speed;
-}
-
-float CarSimulation::GetMaxRpm()
-{
-    return maxRpm;
-}
-
-float CarSimulation::GetRpm()
-{
-    return rpm;
-}
-
-int16_t CarSimulation::GetGear()
-{
-    return gear;
-}
-
-float CarSimulation::GetOdometer()
-{
-    return odometer;
-}
-
-float CarSimulation::GetFuelLeft()
-{
-    return fuel / maxFuel;
-}

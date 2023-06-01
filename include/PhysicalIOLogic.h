@@ -30,14 +30,16 @@ class PhysicalIOLogic
     std::shared_ptr<WatchedValue<uint64_t>> odometer;
     std::shared_ptr<WatchedValue<uint64_t>> tripometer;
 
-    std::shared_ptr<CarSimulation> carInputs;
+    std::shared_ptr<CarSimulation> simulation;
+    std::shared_ptr<CarInfo> carData;
 
 public:
     PhysicalIOLogic(std::shared_ptr<ScreenAPI> screen, 
     std::shared_ptr<PhotoresistorReader> photoresistor, 
     std::shared_ptr<AsyncThermometer> thermometer, 
     std::shared_ptr<AnalogReader> analog,
-    std::shared_ptr<CarSimulation> carInfo);
+    std::shared_ptr<CarSimulation> simulation,
+    std::shared_ptr<CarInfo> carData);
     void PerformIO();
 protected:
     void RefreshWidgets();
