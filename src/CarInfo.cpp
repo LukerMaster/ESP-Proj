@@ -36,6 +36,8 @@ float CarInfo::GetTankCapacity()
 void CarInfo::SetEngineRpm(float rpm)
 {
     this->rpm = rpm;
+    if (this->rpm < 0)
+        this->rpm = 0;
 }
 
 float CarInfo::GetEngineRpm()

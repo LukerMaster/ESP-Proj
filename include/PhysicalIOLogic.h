@@ -23,6 +23,7 @@ class PhysicalIOLogic
     std::vector<std::shared_ptr<INotifiable>> screenWidgets;
 
     std::shared_ptr<WatchedValue<float>> temperature;
+    std::shared_ptr<WatchedValue<float>> oilTemperature;
     std::shared_ptr<WatchedValue<uint64_t>> rpm;
     std::shared_ptr<WatchedValue<uint32_t>> kmph;
     std::shared_ptr<WatchedValue<float>> fuelPercentage;

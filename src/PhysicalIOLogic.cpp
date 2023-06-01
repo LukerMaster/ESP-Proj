@@ -30,6 +30,14 @@ std::shared_ptr<CarInfo> carData)
         this->screen->DrawText(std::to_string(value).substr(0, std::to_string(value).find(".") + 2) + "C");
     };
 
+    this->oilTemperature = std::make_shared<WatchedValue<float>>();
+    this->oilTemperature->OnValueChanged = [this] (float value)
+    {
+        this->screen->SetTextPosition(this->screen->GetScreenSizeX() - 80, 5);
+        this->screen->SetTextScale(2);
+        this->screen->DrawText("Oil: " + std::to_string(value).substr(0, std::to_string(value).find(".") + 2) + "C");
+    };
+
     this->rpm = std::make_shared<WatchedValue<uint64_t>>();
     this->rpm->OnValueChanged = [this] (uint64_t value)
     {
@@ -125,6 +133,8 @@ void PhysicalIOLogic::PerformIO()
     RefreshWidgets();
   }
 
+  carData->SetInsideTemperature(thermometer->GetTemperature());
+
   float throttle = 3.3333f * std::max(0.7f, analog->GetY()) - 2.3333f; // lerp (0.7 to 1 -> 0 -> 1)
   carData->SetThrottleInput(throttle);
 
@@ -145,7 +155,8 @@ void PhysicalIOLogic::RefreshWidgets()
 
 void PhysicalIOLogic::ReadCarValuesToWidgets()
 {
-    temperature->Set(thermometer->GetTemperature());
+    temperature->Set(carData->GetInsideTemperature());
+    oilTemperature->Set(carData->GetOilTempC());
     rpm->Set(carData->GetEngineRpm());
     kmph->Set(carData->GetSpeed());
     gear->Set(carData->GetCurrentGear());
