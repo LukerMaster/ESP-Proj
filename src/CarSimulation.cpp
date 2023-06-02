@@ -47,20 +47,18 @@ void CarSimulation::Tick(float deltaTime)
     // Acceleration
     if (carData->GetThrottleInput() > 0.02f && carData->GetFuel() > 0)
     {
-        carData->SetEngineRpm(carData->GetEngineRpm() + carData->GetThrottleInput() * deltaTime * carData->GetRpmRaiseSpeed());
+        carData->SetSpeed(carData->GetSpeed() + carData->GetThrottleInput() * deltaTime * enginePower);
     }
     // Braking
     if (carData->GetBrakeInput() > 0.02f)
     {
-        carData->SetEngineRpm(carData->GetEngineRpm() - carData->GetBrakeInput() * deltaTime * carData->GetRpmRaiseSpeed());
+        carData->SetSpeed(carData->GetSpeed() - carData->GetBrakeInput() * deltaTime * enginePower);
     }
-
-    // Apply to speed
-    carData->SetSpeed(carData->GetEngineRpm() * GetGearMult(carData->GetCurrentGear()));
-
 
     // Wind resistance
     carData->SetSpeed(carData->GetSpeed() - (carData->GetSpeed() * deltaTime * windResistance));
+
+    // Apply to RPM
     carData->SetEngineRpm(carData->GetSpeed() / GetGearMult(carData->GetCurrentGear()));
 
     // Gear changing
@@ -80,6 +78,8 @@ void CarSimulation::Tick(float deltaTime)
             carData->SetEngineRpm(carData->GetSpeed() / GetGearMult(carData->GetCurrentGear()));
         }
     }
+    if (carData->GetEngineRpm() > carData->GetMaxRpm())
+        carData->SetEngineRpm(carData->GetMaxRpm());
 
     // Set odometer
     carData->SetOdometer(carData->GetOdometerReading() + carData->GetSpeed() * deltaTime / 3600);
@@ -92,4 +92,3 @@ void CarSimulation::Tick(float deltaTime)
     float targetOilTemp = InterpolateOilTemp(carData->GetEngineRpm());
     carData->SetOilTempC(carData->GetOilTempC() + ((targetOilTemp - carData->GetOilTempC()) * deltaTime * oilTempConductivity));
 }
-

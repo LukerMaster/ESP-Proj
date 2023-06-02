@@ -3,6 +3,8 @@
 void CarInfo::SetSpeed(float kmph)
 {
     this->kmph = kmph;
+    if (this->kmph < 0)
+        this->kmph = 0;
 }
 
 float CarInfo::GetSpeed()
@@ -123,16 +125,6 @@ void CarInfo::SetBrakeInput(float value)
 float CarInfo::GetBrakeInput()
 {
     return this->brakePressValue;
-}
-
-void CarInfo::SetRpmRaiseSpeed(float rpmPerSec)
-{
-    this->rpmRaiseSpeed = rpmPerSec;
-}
-
-float CarInfo::GetRpmRaiseSpeed()
-{
-    return this->rpmRaiseSpeed;
 }
 
 float CarInfo::GetInsideTemperature()

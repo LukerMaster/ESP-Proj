@@ -29,8 +29,6 @@ public:
     float GetThrottleInput();
     void SetBrakeInput(float value);
     float GetBrakeInput();
-    void SetRpmRaiseSpeed(float rpmPerSec);
-    float GetRpmRaiseSpeed();
 
     float GetInsideTemperature();
     void SetInsideTemperature(float tempC);
