@@ -21,8 +21,8 @@ float CarSimulation::GetGearMult(int16_t gear)
 
 float CarSimulation::InterpolateOilTemp(float x) 
 {
-    std::vector<float> x_values = {0, 1000, 3000, 7200};
-    std::vector<float> y_values = {30, 80, 100, 120};
+    std::vector<float> x_values = {0, 1000, 3000, 7200, 9000, 11000, 50000};
+    std::vector<float> y_values = {30, 80, 100, 120, 180, 300, 800};
 
     // Finding the two closest data points
     int index = 0;
@@ -60,7 +60,8 @@ void CarSimulation::Tick(float deltaTime)
 
 
     // Wind resistance
-    carData->SetSpeed(carData->GetSpeed() - (carData->GetSpeed() * deltaTime));
+    carData->SetSpeed(carData->GetSpeed() - (carData->GetSpeed() * deltaTime * windResistance));
+    carData->SetEngineRpm(carData->GetSpeed() / GetGearMult(carData->GetCurrentGear()));
 
     // Gear changing
     if (carData->GetEngineRpm() > carData->GetMaxRpm() * 0.94f)
@@ -70,9 +71,6 @@ void CarSimulation::Tick(float deltaTime)
             carData->SetCurrentGear(carData->GetCurrentGear() + 1);
             carData->SetEngineRpm( carData->GetSpeed() / GetGearMult(carData->GetCurrentGear()));
         }
-            
-        else if (carData->GetEngineRpm() > carData->GetMaxRpm())
-            carData->SetEngineRpm(carData->GetMaxRpm());
     }
     else if (carData->GetEngineRpm() < carData->GetMaxRpm() * 0.4f)
     {
@@ -88,10 +86,10 @@ void CarSimulation::Tick(float deltaTime)
     // Set tripometer
     carData->SetTripometer(carData->GetTripometerReading() + carData->GetSpeed() * deltaTime / 3600);
     // Fuel consumption
-    carData->SetFuel(carData->GetFuel() - carData->GetEngineRpm() * deltaTime * 0.00002f);
+    carData->SetFuel(carData->GetFuel() - carData->GetEngineRpm() * deltaTime * 0.00001f);
 
     // Oil temperature
     float targetOilTemp = InterpolateOilTemp(carData->GetEngineRpm());
-    carData->SetOilTempC(carData->GetOilTempC() - ((targetOilTemp - carData->GetOilTempC()) * deltaTime));
+    carData->SetOilTempC(carData->GetOilTempC() + ((targetOilTemp - carData->GetOilTempC()) * deltaTime * oilTempConductivity));
 }
 

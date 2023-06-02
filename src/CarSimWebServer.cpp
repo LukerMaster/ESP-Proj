@@ -21,9 +21,23 @@ CarSimWebServer::CarSimWebServer(std::shared_ptr<CarInfo> carData, std::string s
         server.on("/api/stats", HTTP_GET, [this](AsyncWebServerRequest* request)
         {
             request->send(
-                200, "text/json", 
+                200, "application/json", 
                 (
-                std::string(R"({"anus" : "yes"})").c_str()
+                    ("{ \"car-data\" : {" + 
+                        Jsonify("speed", this->carData->GetSpeed()) +
+                        Jsonify("fuel-left", this->carData->GetFuel()) +
+                        Jsonify("fuel-tank-capacity", this->carData->GetTankCapacity()) +
+                        Jsonify("rpm", this->carData->GetEngineRpm()) +
+                        Jsonify("maxRpm", this->carData->GetMaxRpm()) +
+                        Jsonify("odometer", this->carData->GetOdometerReading()) +
+                        Jsonify("tripometer", this->carData->GetTripometerReading()) +
+                        Jsonify("oil-temperature", this->carData->GetOilTempC()) +
+                        Jsonify("current-gear", this->carData->GetCurrentGear()) +
+                        Jsonify("num-of-forward-gears", this->carData->GetNumOfForwardGears())+
+                        Jsonify("throttle-valve-open-percent", this->carData->GetThrottleInput()) + 
+                        Jsonify("brake-pressure-applied", this->carData->GetBrakeInput()) + 
+                        Jsonify("inside-temperature", this->carData->GetInsideTemperature(), true) +
+                    "}\n}").c_str()
                 )
             );
         });

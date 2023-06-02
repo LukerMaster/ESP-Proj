@@ -33,9 +33,9 @@ std::shared_ptr<CarInfo> carData)
     this->oilTemperature = std::make_shared<WatchedValue<float>>();
     this->oilTemperature->OnValueChanged = [this] (float value)
     {
-        this->screen->SetTextPosition(this->screen->GetScreenSizeX() - 80, 5);
+        this->screen->SetTextPosition(this->screen->GetScreenSizeX() - this->screen->GetScreenSizeX() * 0.6f, 5);
         this->screen->SetTextScale(2);
-        this->screen->DrawText("Oil: " + std::to_string(value).substr(0, std::to_string(value).find(".") + 2) + "C");
+        this->screen->DrawText("Oil:" + std::to_string(value).substr(0, std::to_string(value).find(".") + 2) + "C ");
     };
 
     this->rpm = std::make_shared<WatchedValue<uint64_t>>();

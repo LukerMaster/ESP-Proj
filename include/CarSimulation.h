@@ -17,15 +17,20 @@ class CarSimulation
     /// @return 
     float GetRpmRaiseSpeedPenalty(int16_t gear);
     float InterpolateOilTemp(float x);
+
+    float windResistance = 0.7f;
+    float oilTempConductivity = 0.06f;
+
     public:
         CarSimulation(std::shared_ptr<CarInfo> carData)
             : carData(carData)
         {
-            carData->SetRpmRaiseSpeed(2000);
+            carData->SetRpmRaiseSpeed(5000);
             carData->SetTankCapacity(30);
             carData->SetFuel(30);
             carData->SetNumOfForwardGears(7);
             carData->SetMaxRpm(7200);
+            carData->SetOilTempC(15);
         };
     void Tick(float deltaTime);
 };
