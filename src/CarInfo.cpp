@@ -1,61 +1,78 @@
 #include "CarInfo.h"
 
-void CarInfo::SetSpeed(uint16_t kmph)
+void CarInfo::SetSpeed(float kmph)
 {
     this->kmph = kmph;
+    if (this->kmph < 0)
+        this->kmph = 0;
 }
 
-uint16_t CarInfo::GetSpeed()
+float CarInfo::GetSpeed()
 {
     return kmph;
 }
 
-void CarInfo::SetFuelPercentage(float percentage)
+void CarInfo::SetFuel(float liters)
 {
-    this->fuelPercentage = percentage;
+    this->fuel = liters;
+    if (this->fuel < 0)
+        this->fuel = 0;
 }
 
-float CarInfo::GetFuelPercentage()
+float CarInfo::GetFuel()
 {
-    return fuelPercentage;
+    return fuel;
 }
 
-void CarInfo::SetEngineRpm(uint32_t rpm)
+void CarInfo::SetTankCapacity(float liters)
+{
+    if (liters < 0)
+        throw std::runtime_error("Fuel tank cannot have negative capacity.");
+    this->fuelTankCapacity = liters;
+}
+float CarInfo::GetTankCapacity()
+{
+    return fuelTankCapacity;
+}
+
+void CarInfo::SetEngineRpm(float rpm)
 {
     this->rpm = rpm;
+    if (this->rpm < 0)
+        this->rpm = 0;
 }
 
-uint32_t CarInfo::GetEngineRpm()
+float CarInfo::GetEngineRpm()
 {
     return rpm;
 }
 
-void CarInfo::SetOdometer(uint64_t kms)
+void CarInfo::SetOdometer(float kms)
 {
     this->odometer = kms;
 }
 
-uint64_t CarInfo::GetOdometerReading()
+float CarInfo::GetOdometerReading()
 {
     return odometer;
 }
 
-void CarInfo::SetTripometer(uint64_t kms)
+void CarInfo::SetTripometer(float kms)
 {
     this->tripometer = kms;
 }
 
-uint64_t CarInfo::GetTripometerReading()
+float CarInfo::GetTripometerReading()
 {
     return tripometer;
 }
 
-void CarInfo::SetOilTempC(int16_t tempC)
+void CarInfo::SetOilTempC(float tempC)
 {
     this->oilTempC = tempC;
 }
 
-int16_t CarInfo::GetOilTempC()
+float CarInfo::GetOilTempC()
 {
     return oilTempC;
 }
@@ -80,12 +97,42 @@ int16_t CarInfo::GetNumOfForwardGears()
     return topGear;
 }
 
-void CarInfo::SetMaxRpm(int32_t maxRpm)
+void CarInfo::SetMaxRpm(float maxRpm)
 {
     this->maxRpm = maxRpm;
 }
 
-int32_t CarInfo::GetMaxRpm()
+float CarInfo::GetMaxRpm()
 {
     return maxRpm;
+}
+
+void CarInfo::SetThrottleInput(float value)
+{
+    this->throttlePressValue = value;
+}
+
+float CarInfo::GetThrottleInput()
+{
+    return this->throttlePressValue;
+}
+
+void CarInfo::SetBrakeInput(float value)
+{
+    this->brakePressValue = value;
+}
+
+float CarInfo::GetBrakeInput()
+{
+    return this->brakePressValue;
+}
+
+float CarInfo::GetInsideTemperature()
+{
+    return this->insideTempReading;
+}
+
+void CarInfo::SetInsideTemperature(float tempC)
+{
+    this->insideTempReading = tempC;
 }

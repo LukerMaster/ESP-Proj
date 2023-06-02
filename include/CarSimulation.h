@@ -1,22 +1,12 @@
 #pragma once
 #include <inttypes.h>
+#include "CarInfo.h"
+#include <memory>
+#include <vector>
 
 class CarSimulation
 {
-    float speed = 0;
-    float rpm = 0;
-    float odometer = 0;
-    float fuel = 30.f;
-
-    float throttleValue = 0;
-    float brakeValue = 0;
-
-    int16_t gear = 1;
-    int16_t maxGear = 6;
-
-    float rpmRaiseSpeed = 2400;
-    float maxRpm = 7200;
-    float maxFuel = 30.f;
+    std::shared_ptr<CarInfo> carData;
 
     float GetGearMult(int16_t gear);
 
@@ -25,22 +15,22 @@ class CarSimulation
     /// @param gear Current gear
     /// @return 
     float GetRpmRaiseSpeedPenalty(int16_t gear);
+    float InterpolateOilTemp(float x);
+
+    float windResistance = 0.11f;
+    float oilTempConductivity = 0.03f;
+    float enginePower = 50.0f;
 
     public:
-    CarSimulation(float rpmRaiseSpeed = 2400, float maxRpm = 7200, int16_t gearCount = 7, float fuelCapacity = 30.f)
-    : rpmRaiseSpeed(rpmRaiseSpeed), 
-    maxRpm(maxRpm), 
-    maxGear(gearCount), 
-    maxFuel(fuelCapacity),  
-    fuel(fuelCapacity) {};
+        CarSimulation(std::shared_ptr<CarInfo> carData)
+            : carData(carData)
+        {
+            carData->SetTankCapacity(30);
+            carData->SetFuel(30);
+            carData->SetNumOfForwardGears(7);
+            carData->SetMaxRpm(7200);
+            carData->SetOilTempC(15);
+            carData->SetCurrentGear(1);
+        };
     void Tick(float deltaTime);
-    void SetThrottle(float throttle);
-    void SetBrake(float brake);
-
-    float GetSpeedKmh();
-    float GetMaxRpm();
-    float GetRpm();
-    int16_t GetGear();
-    float GetOdometer();
-    float GetFuelLeft();
 };
